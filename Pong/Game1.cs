@@ -14,7 +14,6 @@ namespace Pong
         Ball ball;
 
         SpriteFont font1;
-        Vector2 scorePosition;
 
         HUD gameHUD;
 
@@ -27,29 +26,22 @@ namespace Pong
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
-            // TODO: use this.Content to load your game content here
-
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            font1 = Content.Load<SpriteFont>("ScoreFont");
-
-            Viewport viewport = _graphics.GraphicsDevice.Viewport;
-            scorePosition = new Vector2(viewport.Width / 2, viewport.Height / 4);
 
             Texture2D barTexture = Content.Load<Texture2D>("assets/bar");
             Texture2D ballTexture = Content.Load<Texture2D>("assets/ball");
 
-            ball = new Ball(this, ballTexture);
-
+            font1 = Content.Load<SpriteFont>("ScoreFont");
+            Viewport viewport = _graphics.GraphicsDevice.Viewport;
+            
             gameHUD = new HUD(0,0, new Vector2(viewport.Width * 0.25f, viewport.Height / 4), new Vector2(viewport.Width * 0.75f, viewport.Height / 4), font1);
 
+            ball = new Ball(this, ballTexture);
             player1 = new Player(this, new Vector2(10, 100), barTexture, Keys.W, Keys.S);
             player2 = new PlayerAI(this, new Vector2(760, 100), barTexture, Keys.Up, Keys.Down, ball);
 
@@ -83,8 +75,6 @@ namespace Pong
             player1.HasCollided(ball);
             player2.HasCollided(ball);
 
-            // TODO: Add your update logic here
-
             base.Update(gameTime);
         }
 
@@ -94,15 +84,12 @@ namespace Pong
 
             _spriteBatch.Begin();
 
-
             gameHUD.Draw(_spriteBatch);
             player1.Draw(_spriteBatch);
             player2.Draw(_spriteBatch);
             ball.Draw(_spriteBatch);
             
             _spriteBatch.End();
-
-            // TODO: Add your drawing code here
 
             base.Draw(gameTime);
         }
