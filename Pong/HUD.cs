@@ -26,8 +26,8 @@ namespace Pong
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            string output1 = "Score: "+scoreP1;
-            string output2 = "Score: "+scoreP2;
+            string output1 = ""+scoreP1;
+            string output2 = ""+scoreP2;
             Vector2 FontOrigin1 = scoreFont.MeasureString(output1) / 2;
             Vector2 FontOrigin2 = scoreFont.MeasureString(output2) / 2;
             spriteBatch.DrawString(scoreFont, output1, scoreP1Position, Color.White,
