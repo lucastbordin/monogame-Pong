@@ -36,14 +36,17 @@ namespace Pong
 
             Random rnd = new Random();
             int verticalRandom = rnd.Next(1, 15);
+            float verticalSpeed = BALL_VELOCITY;
+            if (verticalRandom > 7)
+                verticalSpeed *= -1;
 
             if (previousVelocity.X < 0)
             {
-                velocity = new Vector2(BALL_VELOCITY, -BALL_VELOCITY + verticalRandom/10);
+                velocity = new Vector2(BALL_VELOCITY, verticalSpeed + verticalRandom/10);
             }
             else 
             { 
-                velocity = new Vector2(-BALL_VELOCITY, -BALL_VELOCITY + verticalRandom/10);
+                velocity = new Vector2(-BALL_VELOCITY, verticalSpeed + verticalRandom/10);
             }
 
 
