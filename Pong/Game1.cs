@@ -17,6 +17,8 @@ namespace Pong
 
         HUD gameHUD;
 
+        public const float START_CATCH_DISTANCE_OFFSET = 200;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -70,6 +72,20 @@ namespace Pong
 
             player1.Update();
             player2.Update();
+
+            Viewport viewport = _graphics.GraphicsDevice.Viewport;
+
+            if (ball.Position.X > viewport.Width - START_CATCH_DISTANCE_OFFSET/2 && ball.Velocity.X>0)
+            {
+                float direction = (player2.Position.Y + player2.Texture.Height/2 -20) - (ball.Position.Y - ball.Texture.Height/2);
+
+                ball.Position += new Vector2 (ball.Velocity.X,direction*0.1f);
+            }
+            else
+            {
+                ball.Position += ball.Velocity;
+            }
+
             ball.Update();
 
             player1.HasCollided(ball);

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace Pong
 {
@@ -12,6 +13,11 @@ namespace Pong
         Keys keyDown;
         Game game;
         Ball ball;
+
+        public Vector2 Position { get => position; }
+        public Texture2D Texture { get => texture; }
+
+        public const float START_CATCH_DISTANCE_OFFSET = 200;
 
         public float player_speed = 5F;
 
@@ -54,6 +60,49 @@ namespace Pong
         public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(texture, position, Color.White);
+
+            var viewport = game.GraphicsDevice.Viewport;
+
+            float startCatchDistance = viewport.Width - START_CATCH_DISTANCE_OFFSET;
+            int catchDistance = viewport.Width - 55;
+
+            //if ((position.Y + (texture.Height / 2)) - (ball.Position.Y + (ball.Texture.Height / 2)) > 50 
+            //    || (position.Y + (texture.Height / 2)) - (ball.Position.Y + (ball.Texture.Height / 2)) < -50)
+            if (ball.Velocity.X > 0)
+            {
+                if (catchDistance > ball.Position.X && ball.Position.X > startCatchDistance)
+                {
+                    //var ballDistance = position.X - ball.Position.X;
+
+                    var ballRelativePosition = ball.Position.X - startCatchDistance;
+
+                    float linePosition;
+
+                    if (ballRelativePosition < (position.X - startCatchDistance) / 2)
+                    {
+                        linePosition = position.X - ballRelativePosition;
+                    }
+                    else
+                    {
+                        linePosition = ball.Position.X;
+                    }
+
+                    DrawLineBetween(spriteBatch,
+                        new Vector2(position.X + (texture.Width / 2), position.Y + (texture.Height / 2)),
+                        new Vector2(linePosition, ball.Position.Y + (ball.Texture.Height / 2)),
+                        10,
+                        Color.White);
+                }
+
+                if (ball.Position.X > catchDistance)
+                {
+                    DrawLineBetween(spriteBatch,
+                        new Vector2(position.X + (texture.Width / 2), position.Y + (texture.Height / 2)),
+                        new Vector2(ball.Position.X + (ball.Texture.Width / 2), ball.Position.Y + (ball.Texture.Height / 2)),
+                        10,
+                        Color.White);
+                }
+            }
         }
 
         public Rectangle GetBounds()
@@ -79,6 +128,42 @@ namespace Pong
 
                 ball.InvertVelocity();
             }
+        }
+
+        public void DrawLineBetween(
+            SpriteBatch spriteBatch,
+            Vector2 startPos,
+            Vector2 endPos,
+            int thickness,
+            Color color)
+        {
+            // Create a texture as wide as the distance between two points and as high as
+            // the desired thickness of the line.
+            var distance = (int)Vector2.Distance(startPos, endPos);
+            var texture = new Texture2D(spriteBatch.GraphicsDevice, distance, thickness);
+
+            // Fill texture with given color.
+            var data = new Color[distance * thickness];
+            for (int i = 0; i < data.Length; i++)
+            {
+                data[i] = color;
+            }
+            texture.SetData(data);
+
+            // Rotate about the beginning middle of the line.
+            var rotation = (float)Math.Atan2(endPos.Y - startPos.Y, endPos.X - startPos.X);
+            var origin = new Vector2(0, thickness / 2);
+
+            spriteBatch.Draw(
+                texture,
+                startPos,
+                null,
+                Color.White,
+                rotation,
+                origin,
+                1.0f,
+                SpriteEffects.None,
+                1.0f);
         }
     }
 }

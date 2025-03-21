@@ -16,8 +16,8 @@ namespace Pong
         bool outOfBounds = false;
 
         public bool OutOfBounds { get => outOfBounds; }
-        public Vector2 Position { get => position; }
-        public Vector2 Velocity { get => velocity; }
+        public Vector2 Position { get => position; set => position = value; }
+        public Vector2 Velocity { get => velocity; set => velocity = value; }
         public Texture2D Texture { get => texture; }
 
 
@@ -89,7 +89,7 @@ namespace Pong
                 velocity.Y *= -1; //inverte velocidade
             }
 
-            position += velocity;
+            
 
             if (position.X + texture.Width < 0 || position.X > viewport.Width)
             {
