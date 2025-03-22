@@ -7,7 +7,7 @@ namespace Pong
 {
     public class Ball
     {
-        public const float BALL_VELOCITY = 2.5F;
+        public const float BALL_VELOCITY = 3F;
 
         Texture2D texture;
         Game game;
@@ -68,8 +68,11 @@ namespace Pong
             Random rnd = new Random();
             int verticalRandom = rnd.Next(-500, 500);
 
-            velocity.X += velocity.X * 0.15F;
-            velocity.Y += (velocity.Y * 0.15F) + verticalRandom/100;
+            velocity.X += velocity.X * 0.1F;
+            velocity.Y += (velocity.Y * 0.1F) + verticalRandom/100;
+
+            if (velocity.Y > 8) velocity.Y = 8;
+
             velocity.X *= -1;
         }
         public void Update()

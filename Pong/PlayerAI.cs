@@ -14,12 +14,15 @@ namespace Pong
         Game game;
         Ball ball;
 
+        bool flagAnimationStarted = false;
+        float linePositionY = 0;
+
         public Vector2 Position { get => position; }
         public Texture2D Texture { get => texture; }
 
-        public const float START_CATCH_DISTANCE_OFFSET = 200;
+        public const float START_CATCH_DISTANCE_OFFSET = 300;
 
-        public float player_speed = 5F;
+        public float player_speed = 0F;
 
         public PlayerAI(Game game, Vector2 position, Texture2D texture, Keys keyUp, Keys keyDown, Ball ball)
         {
@@ -68,28 +71,47 @@ namespace Pong
 
             //if ((position.Y + (texture.Height / 2)) - (ball.Position.Y + (ball.Texture.Height / 2)) > 50 
             //    || (position.Y + (texture.Height / 2)) - (ball.Position.Y + (ball.Texture.Height / 2)) < -50)
-            if (ball.Velocity.X > 0)
+
+            var ballMiddleY = ball.Position.Y - ball.Texture.Height / 2;
+            var middleY = position.Y + texture.Height / 2;
+
+            
+
+
+            if (ball.Velocity.X < 0) flagAnimationStarted = false;
+
+            //TODO find actual line position 
+            linePositionY = ball.Position.Y;
+
+
+            if (flagAnimationStarted || (ball.Velocity.X > 0 && (ballMiddleY > middleY + 100 || ballMiddleY < middleY - 100)) /*&& (ball.Velocity.X>5 || ball.Velocity.Y>5)*/ )
             {
                 if (catchDistance > ball.Position.X && ball.Position.X > startCatchDistance)
                 {
                     //var ballDistance = position.X - ball.Position.X;
+                    flagAnimationStarted = true;
 
-                    var ballRelativePosition = ball.Position.X - startCatchDistance;
+                    var ballRelativePositionX = ball.Position.X - startCatchDistance;
+                    //var ballRelativePositionY = ball.Position.Y - position.Y + (texture.Height/2);
+                    var ballDistance = (ball.Position.X - position.X);
 
-                    float linePosition;
+                    float linePositionX;
+                    
 
-                    if (ballRelativePosition < (position.X - startCatchDistance) / 2)
+                    if (ballRelativePositionX < (position.X - startCatchDistance) / 2)
                     {
-                        linePosition = position.X - ballRelativePosition;
+                        linePositionX = position.X - ballRelativePositionX;
+                        
                     }
                     else
                     {
-                        linePosition = ball.Position.X;
+                        linePositionX = ball.Position.X;
+                        linePositionY = ball.Position.Y;
                     }
 
                     DrawLineBetween(spriteBatch,
                         new Vector2(position.X + (texture.Width / 2), position.Y + (texture.Height / 2)),
-                        new Vector2(linePosition, ball.Position.Y + (ball.Texture.Height / 2)),
+                        new Vector2(linePositionX, linePositionY),
                         10,
                         Color.White);
                 }
